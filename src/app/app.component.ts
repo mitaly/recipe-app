@@ -7,4 +7,9 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   title = 'recipe-app';
+  selectedTab:string = 'recipes';
+
+  onTabSelect(selectedTab:string){
+      this.selectedTab = selectedTab;
+  }
 }
