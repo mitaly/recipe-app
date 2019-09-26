@@ -5,6 +5,9 @@
 </div>
 <div class="row">
   <div class="col-xs-12">
-    <app-recipe-item *ngFor="let recipe of recipes" [recipeItem]="recipe"></app-recipe-item>
+    <app-recipe-item *ngFor="let recipe of recipes"
+              [recipeItem]="recipe"
+              (recipeSelectedEvent)="recipeSelected(recipe)">
+    </app-recipe-item>
   </div>
 </div>
