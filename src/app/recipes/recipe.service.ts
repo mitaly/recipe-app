@@ -16,8 +16,6 @@ export class RecipeService{
               [new Ingredient('Chillies',4), new Ingredient('capsicum',6)])
   ];
 
-  recipeSelectedEvent = new EventEmitter<Recipe>();
-
   constructor(private shoppingListService:ShoppingListService){ }
 
   getRecipes(){
