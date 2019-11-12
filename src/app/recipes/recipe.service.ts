@@ -7,16 +7,17 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Injectable()
 export class RecipeService{
-  private recipes = [
-    new Recipe("Pasta",
-              "Red sauce pasta",
-              "https://www.bbcgoodfood.com/sites/default/files/recipe-collections/collection-image/2013/05/caponata-pasta_1.jpg",
-              [new Ingredient('Olives', 10), new Ingredient('Papaya', 2)]),
-    new Recipe("Chicken",
-              "Masala chicken",
-              "https://img.delicious.com.au/bsUYtcs3/w759-h506-cfill/del/2019/02/zucchini-spaghetti-with-bolognese-101168-2.jpg",
-              [new Ingredient('Chillies',4), new Ingredient('capsicum',6)])
-  ];
+  // private recipes = [
+  //   new Recipe("Pasta",
+  //             "Red sauce pasta",
+  //             "https://www.bbcgoodfood.com/sites/default/files/recipe-collections/collection-image/2013/05/caponata-pasta_1.jpg",
+  //             [new Ingredient('Olives', 10), new Ingredient('Papaya', 2)]),
+  //   new Recipe("Chicken",
+  //             "Masala chicken",
+  //             "https://img.delicious.com.au/bsUYtcs3/w759-h506-cfill/del/2019/02/zucchini-spaghetti-with-bolognese-101168-2.jpg",
+  //             [new Ingredient('Chillies',4), new Ingredient('capsicum',6)])
+  // ];
+  private recipes : Recipe[] = [];
   recipesChanged = new Subject<Recipe[]>();
 
   constructor(private shoppingListService:ShoppingListService){ }
@@ -47,6 +48,11 @@ export class RecipeService{
 
   deleteRecipe(index:number){
     this.recipes.splice(index, 1);
+    this.recipesChanged.next(this.recipes.slice());
+  }
+
+  setRecipes(recipes: Recipe[]){
+    this.recipes = recipes;
     this.recipesChanged.next(this.recipes.slice());
   }
 }
