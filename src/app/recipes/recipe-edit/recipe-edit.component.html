@@ -1,11 +1,86 @@
 <div>
-  <div class="form-group">
-    <label for="name">Name</label>
-    <input type="text" id="name" class="form-control">
+  <form (ngSubmit)="onSubmit()" [formGroup]="recipeForm">
+    <button class="btn btn-success" 
+            type="submit" 
+            [disabled]="recipeForm.invalid">Save</button>
+    <button class="btn btn-danger" 
+            type="button"
+            (click)="cancelEditing()">
+            Cancel
+    </button>
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" 
+                  class="form-control"
+                  formControlName="name">
+          </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="form-group">
+            <label for="imagePath">Image Path</label>
+            <input type="text" 
+                  class="form-control"
+                  formControlName="imagePath">
+          </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <img [src]="recipeForm.get('imagePath').value" class="image-responsive">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="form-group">
+          <label for="desc">Description</label>
+          <textarea rows="6"
+                  type="text"
+                  class="form-control"
+                  formControlName="description">
+          </textarea>
+        </div>
+    </div>
   </div>
-  <div class="form-group">
-    <label for="desc">Description</label>
-    <input type="text" id="desc" class="form-control">
-  </div>
-  <button class="btn btn-primary">Add</button>
+  <div class="row">
+    <div class="col-xs-12">
+        <label for="ingredients">Ingredients</label>
+        <div class="col-xs-12" formArrayName="ingredients">
+          <div class="row"
+              *ngFor="let ingredient of recipeForm.get('ingredients').controls; let i = index"
+              [formGroupName]="i"
+              style="margin-top:10px">
+            <div class="col-xs-8">
+              <input type="text" 
+                    class="form-control"
+                    formControlName="name">
+            </div>
+            <div class="col-xs-2">
+              <input type="number" 
+                    class="form-control"
+                    formControlName="amount">
+            </div>
+            <div class="col-xs-2">
+              <button type="button" 
+                      class="btn btn-danger"
+                      (click)="onDeleteIngredient(i)">X</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-xs-12">
+              <button class="btn btn-success"
+                      type="button"
+                      (click)="onAddNewIngredient()"
+                      style="margin-top:10px">
+                Add Ingredient
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
 </div>
