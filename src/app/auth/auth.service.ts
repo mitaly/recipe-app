@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { catchError, tap } from 'rxjs/operators';
 import { throwError, BehaviorSubject } from 'rxjs';
 import { User } from './user.model';
+import { Router } from '@angular/router';
 
 export interface AuthResponseData{
     idToken : string;
@@ -15,7 +16,7 @@ export interface AuthResponseData{
 
 @Injectable({providedIn : 'root'})
 export class AuthService{
-    constructor(private http : HttpClient){}
+    constructor(private http : HttpClient, private router: Router){}
     
     private signUpurl = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCk53GHFxIg0etPYOqYWnLc_S7utO23RyM';
     private signInUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCk53GHFxIg0etPYOqYWnLc_S7utO23RyM';
@@ -39,6 +40,11 @@ export class AuthService{
             tap(response => {
                 this.authenticatedUser(response.email, response.localId, response.idToken, +response.expiresIn);
             }));
+    }
+
+    logout(){
+        this.user.next(null);
+        this.router.navigate(['/auth']);
     }
 
     private authenticatedUser(email:string, localId:string, token:string, expiresIn:number){
