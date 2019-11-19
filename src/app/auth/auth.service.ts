@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, tap } from 'rxjs/operators';
-import { throwError, Subject } from 'rxjs';
+import { throwError, BehaviorSubject } from 'rxjs';
 import { User } from './user.model';
 
 export interface AuthResponseData{
@@ -19,7 +19,7 @@ export class AuthService{
     
     private signUpurl = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCk53GHFxIg0etPYOqYWnLc_S7utO23RyM';
     private signInUrl = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCk53GHFxIg0etPYOqYWnLc_S7utO23RyM';
-    user = new Subject<User>();
+    user = new BehaviorSubject<User>(null);
 
     signUp(email : string, password : string){
         return this.http.post<AuthResponseData>(this.signUpurl, {email: email, password: password, returnSecureToken:true})
@@ -27,7 +27,7 @@ export class AuthService{
                 return this.handleError(errorResponse);
             }),
             tap(response => {
-                this.authenticatedUser(response.email, response.localId, response.idToken, response.expiresIn);
+                this.authenticatedUser(response.email, response.localId, response.idToken, +response.expiresIn);
             }));
     }
 
@@ -37,14 +37,13 @@ export class AuthService{
                 return this,this.handleError(errorResponse);
             }),
             tap(response => {
-                this.authenticatedUser(response.email, response.localId, response.idToken, response.expiresIn);
+                this.authenticatedUser(response.email, response.localId, response.idToken, +response.expiresIn);
             }));
     }
 
-    private authenticatedUser(email:string, localId:string, token:string, expiresIn:string){
-        var expirationDate = new Date((new Date().getMilliseconds()) + (+expiresIn*1000));
+    private authenticatedUser(email:string, localId:string, token:string, expiresIn:number){
+        var expirationDate = new Date((new Date().getTime()) + expiresIn*1000);
         var user = new User(email, localId, token, expirationDate);
-
         this.user.next(user);
     }
 
