@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, tap, take, exhaustMap } from 'rxjs/operators';
 import { throwError, BehaviorSubject } from 'rxjs';
 import { User } from './user.model';
 import { Router } from '@angular/router';
@@ -44,13 +44,42 @@ export class AuthService{
 
     logout(){
         this.user.next(null);
+        localStorage.removeItem("user");
         this.router.navigate(['/auth']);
+    }
+
+    autoLogin(){
+        var userDataString = localStorage.getItem("user");
+        if(userDataString){
+            var userData :{
+                email :string;
+                id:string;
+                _token:string;
+                _tokenExpirationDate:string
+            } = JSON.parse(userDataString);
+
+            var fetchedUser : User = new User(userData.email, userData.id, userData._token, new Date(userData._tokenExpirationDate));
+            if(fetchedUser.token){
+                this.user.next(fetchedUser);
+                this.autoLogout(new Date(userData._tokenExpirationDate).getTime() - new Date().getTime());
+            }
+        }else{
+            this.router.navigate(['/auth']);
+        }
+    }
+
+    autoLogout(expiresIn: number){
+        setTimeout(() => {
+            this.logout();
+        }, expiresIn);
     }
 
     private authenticatedUser(email:string, localId:string, token:string, expiresIn:number){
         var expirationDate = new Date((new Date().getTime()) + expiresIn*1000);
         var user = new User(email, localId, token, expirationDate);
         this.user.next(user);
+        this.autoLogout(expiresIn * 1000);
+        localStorage.setItem("user", JSON.stringify(user));
     }
 
     private handleError(errorResponse:HttpErrorResponse){
