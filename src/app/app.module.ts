@@ -16,10 +16,11 @@ import { NoRecipeSelectedComponent } from './recipes/no-recipe-selected/no-recip
 import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RecipeService } from './recipes/recipe.service';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { DataStorageService } from './shared/data-storage.service';
 import { AuthComponent } from './auth/auth.component';
 import { LoaderComponent } from './shared/loader/loader.component';
+import { AuthInterceptorService } from './auth/auth-intercepter.service';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,12 @@ import { LoaderComponent } from './shared/loader/loader.component';
     ReactiveFormsModule,
     HttpClientModule
   ],
-  providers: [ ShoppingListService, RecipeService, DataStorageService ],
+  providers: [ ShoppingListService, RecipeService, DataStorageService, AuthInterceptorService,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptorService,
+      multi: true
+    } ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
