@@ -5,6 +5,7 @@ import { Observable, Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { PlaceholderDirective } from '../shared/placeholder.directive';
 import { AlertComponent } from '../shared/alert/alert.component';
+import { LoggingService } from '../logging.service';
 @Component({
     selector: 'auth-component',
     templateUrl: './auth.component.html'
@@ -21,10 +22,11 @@ export class AuthComponent implements OnInit, OnDestroy{
 
     constructor(private authService: AuthService, 
                 private router: Router, 
-                private componentFactoryResolver : ComponentFactoryResolver){}
+                private componentFactoryResolver : ComponentFactoryResolver,
+                private loggingService: LoggingService){}
 
     ngOnInit(){
-
+        this.loggingService.printLog("AuthComp: Inside ngOnInit");
     }
 
     onModeSwitch(){
