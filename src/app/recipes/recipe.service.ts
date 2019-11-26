@@ -1,10 +1,7 @@
 import  { Recipe } from './recipe.model';
-import { EventEmitter, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { Ingredient } from '../shared/ingredient.model';
-import { ShoppingListService } from '../shopping-list/shopping-list.service';
 import { Subject } from 'rxjs';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
-
 @Injectable()
 export class RecipeService{
   // private recipes = [
@@ -20,18 +17,12 @@ export class RecipeService{
   private recipes : Recipe[] = [];
   recipesChanged = new Subject<Recipe[]>();
 
-  constructor(private shoppingListService:ShoppingListService){ }
-
   getRecipes(){
     //returns a copy of recipes array so that this.recipes is always protected from changed from outside
     //this is needed becauce (returns this.recipes) will return reference of actual array
     return this.recipes.slice();
   }
-
-  addIngredients(ingredients:Ingredient[]){
-    this.shoppingListService.addIngredients(ingredients);
-  }
-
+  
   getRecipe(index:number):Recipe{
     return this.recipes[index];
   }
