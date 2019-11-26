@@ -9,6 +9,8 @@ import { SharedModule } from './shared/shared.module';
 import { CoreModule } from './core.module';
 import { AppRoutingModule } from './app-routing.module';
 import { LoggingService } from './logging.service';
+import { StoreModule } from '@ngrx/store';
+import { shoppingListReducer } from './shopping-list/shopping-list.reducer';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,10 @@ import { LoggingService } from './logging.service';
     BrowserModule,
     HttpClientModule,
     SharedModule,
-    CoreModule
+    CoreModule,
+    StoreModule.forRoot({
+      shoppingList: shoppingListReducer
+    })
   ],
   bootstrap: [AppComponent],
   entryComponents: [AlertComponent],
