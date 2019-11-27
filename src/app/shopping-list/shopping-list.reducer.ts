@@ -16,10 +16,6 @@ const initialState : State= {
     editedIngredient: null
 }
 
-export interface AppState{
-    shoppingList: State
-}
-
 export function shoppingListReducer(state = initialState, action:ShoppingListActions.ShoppingListAction){
     switch(action.type){
         case ShoppingListActions.ADD_INGREDIENT:

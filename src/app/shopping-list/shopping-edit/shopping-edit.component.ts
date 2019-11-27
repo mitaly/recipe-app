@@ -3,7 +3,7 @@ import { Ingredient } from '../../shared/ingredient.model';
 import { NgForm } from '@angular/forms';
 import { Store } from '@ngrx/store';
 import * as ShoppingListActions from '../shopping-list.actions';
-import * as fromShoppingList from '../shopping-list.reducer';
+import * as fromAppReducer from '../../store/app.reducer';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -18,7 +18,7 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
   editMode = false;
   storeSubs : Subscription;
 
-  constructor(private store: Store<fromShoppingList.AppState>) { }
+  constructor(private store: Store<fromAppReducer.AppState>) { }
 
   ngOnInit() {
     this.storeSubs = this.store.select('shoppingList')

@@ -3,7 +3,7 @@ import { Ingredient } from '../shared/ingredient.model';
 import { LoggingService } from '../logging.service';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import * as fromShoppingList from './shopping-list.reducer';
+import * as fromAppReducer from '../store/app.reducer';
 import * as ShoppingListActions from './shopping-list.actions';
 
 @Component({
@@ -15,7 +15,7 @@ export class ShoppingListComponent implements OnInit {
   ingredients:Observable<{ingredients: Ingredient[]}>;
 
   constructor(private loggingService:LoggingService,
-              private store: Store<fromShoppingList.AppState>) { }
+              private store: Store<fromAppReducer.AppState>) { }
 
   ngOnInit() {
     this.loggingService.printLog("ShoppingList:Inside ngOnInit");
