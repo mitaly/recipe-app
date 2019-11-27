@@ -11,6 +11,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { LoggingService } from './logging.service';
 import { StoreModule } from '@ngrx/store';
 import * as fromAppReducer from './store/app.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from './auth/auth.effects';
 
 @NgModule({
   declarations: [
@@ -23,7 +25,8 @@ import * as fromAppReducer from './store/app.reducer';
     HttpClientModule,
     SharedModule,
     CoreModule,
-    StoreModule.forRoot(fromAppReducer.appReducerMap)
+    StoreModule.forRoot(fromAppReducer.appReducerMap),
+    EffectsModule.forRoot([AuthEffects])
   ],
   bootstrap: [AppComponent],
   entryComponents: [AlertComponent],
