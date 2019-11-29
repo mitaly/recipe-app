@@ -1,8 +1,6 @@
 import { Component, OnInit, ViewChild, ComponentFactoryResolver, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { AuthService, AuthResponseData } from './auth.service';
-import { Observable, Subscription } from 'rxjs';
-import { Router } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { PlaceholderDirective } from '../shared/placeholder.directive';
 import { AlertComponent } from '../shared/alert/alert.component';
 import { LoggingService } from '../logging.service';
@@ -24,9 +22,7 @@ export class AuthComponent implements OnInit, OnDestroy{
     hostAlert: PlaceholderDirective;
     closeAlertSub : Subscription;
 
-    constructor(private authService: AuthService, 
-                private router: Router, 
-                private componentFactoryResolver : ComponentFactoryResolver,
+    constructor(private componentFactoryResolver : ComponentFactoryResolver,
                 private loggingService: LoggingService,
                 private store: Store<fromApp.AppState>){}
 
@@ -49,35 +45,19 @@ export class AuthComponent implements OnInit, OnDestroy{
     }
 
     onSubmit(){
-        // this.isLoading = true;
-
         const email = this.authForm.value.email;
         const password = this.authForm.value.password;
-        
-        var authResponseObs : Observable<AuthResponseData>;
-
+    
         if(this.isLogin){
-            // authResponseObs = this.authService.logIn(email, password);
             this.store.dispatch(new AuthActions.LoginStartAction({email: email, password:password}));
         }else{
-            authResponseObs = this.authService.signUp(email, password);
+            this.store.dispatch(new AuthActions.SignUpStartAction({email: email, password: password}));
         }
-
-        // authResponseObs.subscribe((response:AuthResponseData) => {
-        //     this.error = null;
-        //     this.isLoading = false;
-        //     this.router.navigate(['/recipes']);
-        // }, error => {
-        //     this.error = error;
-        //     this.isLoading = false;
-        //     this.onErrorShowAlert(error);
-        // });
-
         this.authForm.reset();
     }
 
     onCloseAlert(){
-        this.error = null;
+        this.store.dispatch(new AuthActions.ClearErrorAction());
     }
 
     onErrorShowAlert(message:string){
