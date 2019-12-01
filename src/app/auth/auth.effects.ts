@@ -33,7 +33,7 @@ export class AuthEffects{
                     returnSecureToken:true
                 }).pipe(
                     tap(response => {
-                        this.authService.autoLogout(3000);
+                        this.authService.autoLogout(+response.expiresIn * 1000);
                     })
                     ,map(response => {
                         return this.authenticateUser(response);
@@ -55,7 +55,7 @@ export class AuthEffects{
                     returnSecureToken:true
                 }).pipe(
                     tap(response => {
-                        this.authService.autoLogout(+response.expiresIn);
+                        this.authService.autoLogout(+response.expiresIn * 1000);
                     })
                     ,map(response => {
                         return this.authenticateUser(response);
@@ -72,7 +72,9 @@ export class AuthEffects{
         ofType(AuthActions.AUTHENTICATION_SUCESS),
         tap((action: AuthActions.AuthenticationSuccessAction) => {
             localStorage.setItem("user", JSON.stringify(action.payload));
-            this.router.navigate(['/']);
+            if(action.redirect){
+                this.router.navigate(['/']);
+            }
         })    
     );
 
@@ -103,7 +105,7 @@ export class AuthEffects{
                     new Date(userData._tokenExpirationDate));
                 if(fetchedUser.token){
                     this.authService.autoLogout(new Date(userData._tokenExpirationDate).getTime() - new Date().getTime());
-                    return new AuthActions.AuthenticationSuccessAction(fetchedUser);
+                    return new AuthActions.AuthenticationSuccessAction(fetchedUser, false);
                 }else{
                     return { type: 'DUMMY' };
                 }
@@ -117,7 +119,7 @@ export class AuthEffects{
     private authenticateUser(response: AuthResponseData){
         var expirationDate = new Date((new Date().getTime()) + +response.expiresIn*1000);
         var user = new User(response.email, response.localId, response.idToken, expirationDate);
-        return new AuthActions.AuthenticationSuccessAction(user);
+        return new AuthActions.AuthenticationSuccessAction(user, true);
     }
 
     private handleError(errorResponse:HttpErrorResponse){
